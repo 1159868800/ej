@@ -1,11 +1,183 @@
 <style>
+	<style>
+	.table {
+		border-collapse: collapse;
+		width: 100%;
+		text-align: center;
+	}
+	.table td {
+		border: 1px solid #ccc;
+		line-height: 2em;
+	}
+	.table tr.current {
+		background-color: #ededed;
+	}
+	.onoe{
+			display: none;
+		}
 	
+	.btn {
+		padding: .5em 1em;
+		border-radius: 3px;
+		color: #333;
+		border:1px solid #ccc;
+		cursor: pointer;
+		display: inline-block;
+	}
+	.btns {
+		margin-bottom: .5em;
+	}
 </style>
+</style>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script>
-	
+ $("#froms").submit("onsubmit",function(event){
+	//1.获取用户输入
+		var id=$("input[name=id]").val();
+		var orderTime=$("input[name=orderTime]").val();
+		var total=$("input[name=total]").val();
+		var customerId=$("input[name=customerId]").val();
+		var waiterId=$("input[name=waiterId]").val();
+		var addressId=$("input[name=addressId]").val();
+		
+		var url=baseURL+"/order/insertOrder";
+		var date;
+		if(id){
+			date={
+				id:id,
+				orderTime:orderTime,
+				total:total,
+				customerId:customerId,
+				waiterId:waiterId,
+				addressId:addressId
+			}
+		}else{
+			date={
+				orderTime:orderTime,
+				total:total,
+				customerId:customerId,
+				waiterId:waiterId,
+				addressId:addressId
+			}
+				
+		}//对象
+		 
+		$.post(url,date,function(response){
+			alert(response.message);
+			reloadData();
+		})
+		
+		
+	})
+//给删除按钮绑定事件
+	$("tbody").on("click","a",function(event){
+				if(event.target.className=="btn_del"){
+						var id=event.target.parentNode.parentNode.firstElementChild.firstElementChild.value;
+						url=baseURL+"/order/deleteOrderById";
+						 data="id="+id;
+						$.post(url,data,function(response){
+							if(response.status===200){
+								reloadData();
+							}else{
+								alert(response);
+							}
+						})
+						}
+                if(event.target.className=="btn_upd"){
+                	    var orderTime=event.target.parentNode.parentNode.children[1].innerText;
+						var	total=event.target.parentNode.parentNode.children[2].innerText;
+						var	customerId=event.target.parentNode.parentNode.children[4].innerText;
+						var	waiterId=event.target.parentNode.parentNode.children[3].innerText;
+						var	addressId=event.target.parentNode.parentNode.children[5].innerText;
+						var id=$("input[name=id]").val(id);
+						var orderTime=$("input[name=orderTime]").val(orderTime);
+						var total=$("input[name=total]").val(total);
+						var customerId=$("input[name=customerId]").val(customerId);
+						var waiterId=$("input[name=waiterId]").val(waiterId);
+						var addressId=$("input[name=addressId]").val(addressId);
+						
+						date={
+						id:id,
+						orderTime:orderTime,
+						total:total,
+						customerId:customerId,
+						waiterId:waiterId,
+						addressId:addressId	
+						}
+						var url=baseURL+"/order/updateOrderPrimaryKey"
+						$.post(url,date,function(response){
+							if(response.status===200){
+								reloadData();
+							}else{
+								alert(response);
+							}
+
+						})
+                }
+			
+
+		})
+var baseURL = "http://134.175.154.93:6677";
+// 重载数据
+function reloadData(){
+	var url = baseURL+"/order/findAllOrder";
+	$.get(url,function(response,status){
+		//1. 将tbody清空
+		$("#order_tbl tbody").empty();
+		//2. 追加新的值
+		response.data.forEach(function(item){
+			var newTr = $(`<tr>
+				<td><input type="checkbox" value="`+item.id+`" class="td_1"></td>
+				<td  class="td_2">`+item.orderTime+`</td>
+				<td class="td_3">`+item.total+`</td>
+				<td class="td_4">`+item.customerId+`</td>
+				<td class="td_5">`+item.waiterId+`</td>
+				<td class="td_6">`+item.addressId+`</td>
+				<td>
+					<a class="btn_del" href="#">删除</a>
+					<a class="btn_upd" href="#">修改</a>
+				</td>
+			</tr>`);
+			$("#order_tbl").append(newTr)
+		})
+	})
+}
+reloadData();
+
+
 </script>
 
-<div class="customer">
-	<div>订单管理</div>
-	
+<div class="order">
+<div class="btns">
+		<div id="btn_add" class="btn">添加</div>
+		<div id="btn_import" class="btn">批量导入</div>
+	</div>
+	<div style="margin-bottom: .5em">
+		<!-- 表单 -->
+		<form action="javascript:void(0)" id="froms">
+			<input type="hidden" name="id" />
+			下单时间<input type="text" name="orderTime"/>
+			下单总数 <input type="text" name="total"/>
+			顾客ID<input type="text" name="customerId"/>
+			员工ID<input type="text" name=" waiterId"/>
+			地址ID<input type="text" name="addressId"/>
+			<input type="submit" value="提交">
+		</form>
+	</div>
+
+	<table class="table" id="order_tbl">
+		<thead>
+			<tr>
+				<td width="80px">编号</td>
+				<td>下单时间</td>
+				<td>下单总数</td>
+				<td>顾客ID</td>
+				<td>员工ID</td>
+				<td>地址ID</td>
+				<td width="100px">操作</td>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
 </div>
