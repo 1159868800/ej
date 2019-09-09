@@ -34,15 +34,7 @@
 
 </style>
 <script>
-$.ajaxSetup({
-	error:function(error){
-		alert("出现错误了！");
-		console.log(error);
-	},
-	complete:function(complete){
-		console.log(complete);
-	}
-})
+
 var baseURL = "http://134.175.154.93:6677";
 function reloadData(){
 	var url = baseURL+"/category/findAllCategory";
@@ -65,19 +57,14 @@ function reloadData(){
 		});
 	});
 
-		// $("#btn_add").on= document.getElementById("btn_add");
 		var tbody = document.getElementsByTagName("tbody")[0];
 		//为表单绑定事件
 		document.forms[0].onsubmit = function(event){
 			//1.获取用户输入
-			// var id = $("id").value;
-			// var name = $("name").value;
-			// var num = $("num").value;
-			// var parentId = $("parentId").value;
-			var id=$("input[name=id]").val();
-			var name=$("input[name=name]").val();
-			var num=$("input[name=num]").val();
-			var parentId=$("input[name=parentId]").val();
+			var id = $("id").value;
+			var name = $("name").value;
+			var num = $("num").value;
+			var parentId = $("parentId").value;
 			var url = baseURL+"/category/insertCategory";
 			var data = {
 				id:id,
@@ -86,8 +73,8 @@ function reloadData(){
 				parentId:parentId
 			};
 			//2.异步交互给后台
-			$.post(url,data,function(a,b){
-				alert(a.message);
+			$.post(url,data,function(response){
+				alert(response.message);
 				reloadData();
 			});
 			
@@ -100,14 +87,7 @@ function reloadData(){
 				document.querySelector("input[name=id]").value = "";
 				document.querySelector("input[name=name]").value = "";
 				document.querySelector("input[name=num]").value = "";
-				document.querySelector("input[name=parentId]").value = "";
-				// var url = baseURL+"/category/insertCategory";
-				// var data = {
-				// 	id:id,
-				// 	name:name,
-				// 	num:num,
-				// 	parentId:parentId
-				// };	
+				document.querySelector("input[name=parentId]").value = "";	
 		})
 			//当光标移动的某一行上，为这一行添加背景
 				tbody.onmouseover = function(event){
@@ -169,11 +149,10 @@ $(function(){
 		<form action="javascript:void(0)">
 			<input type="hidden"/>
 
-			编号<input type="text" name="id">
-			分类名称<input type="text" name="name" />
-			数量 <input type="text" name="num" />
-			父Id<input type="text" name="parentId" />
-			<!-- 父节点 <input type="text" name="parent_id"/> -->
+			编号<input type="text" name="id" class="id">
+			分类名称<input type="text" name="name" class="name" />
+			数量 <input type="text" name="num" class="num" />
+			父Id<input type="text" name="parentId" class="parentId" />
 			<input type="submit" value="提交">
 		</form>
 	</div>
