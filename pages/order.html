@@ -31,48 +31,103 @@
 
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script>
- $("#froms").submit("onsubmit",function(event){
-	//1.获取用户输入
-		var id=$("input[name=id]").val();
-		var orderTime=$("input[name=orderTime]").val();
-		var total=$("input[name=total]").val();
-		var customerId=$("input[name=customerId]").val();
-		var waiterId=$("input[name=waiterId]").val();
-		var addressId=$("input[name=addressId]").val();
+//给添加绑定事件
+    $("#btn_add").click(function(){
+		var id=$("#froms input[name=id]").val("");
+		var orderTime=$("#froms input[name=orderTime]").val("");
+		var customerId=$("#froms input[name=customerId]").val("");
+		var waiterId=$("#froms input[name=waiterId]").val("");
+		var total=$("#froms input[name=total]").val("");
+		var addressId=$("#froms input[name=addressId]").val("");				
 		
-		var url=baseURL+"/order/insertOrder";
-		var date;
-		if(id){
-			date={
-				id:id,
-				orderTime:orderTime,
-				total:total,
-				customerId:customerId,
-				waiterId:waiterId,
-				addressId:addressId
-			}
+		
+});
+//给批量删除绑定事件
+$("#btn_batch_del").click(function(event){
+	var ids=$("#order_tbl input:checkbox" ).filter(":checked").map(function(index,item){
+		return $(item).val();
+	}).toArray();
+	var url=baseURL+"/order/batchDeleteOrder";
+	var date="";
+	for(var key in ids){
+		var id=ids[key];
+		if(key==0){
+			date+="ids="+id;
 		}else{
-			date={
-				orderTime:orderTime,
-				total:total,
-				customerId:customerId,
-				waiterId:waiterId,
-				addressId:addressId
-			}
+			date+="&ids="+id;
+		}
+	}
+	
+	$.ajax({
+		url:url,
+		method:"post",
+		date:date,
+		success:function(response){
+			if(response.status===200){
+				alert("批量删除成功");
+				reloadData();
 				
-		}//对象
-		 
-		$.post(url,date,function(response){
-			alert(response.message);
-			reloadData();
-		})
+			}else{
+				alert(response.message);
+			}
+
+		}
+	})
+})
+
+//给表单绑定事件
+$("#froms").submit("onsubmit",function(event){
+	//1.获取用户输入
+		var id=$("#froms input[name=id]").val();
+		var orderTime=$("#froms input[name=orderTime]").val();
+		var customerId=$("#froms input[name=customerId]").val();
+		var waiterId=$("#froms input[name=waiterId]").val();
+		var total=$("#froms input[name=total]").val();
+		var addressId=$("#froms input[name=addressId]").val();				
+		var url_add=baseURL+"/order/insertOrder";
+		var url_upd=baseURL+"/order/updateOrderPrimaryKey";
+	
+				if(id){
+					var date={
+						id:id,
+						orderTime:orderTime,
+						total:total,
+						customerId:customerId,
+						waiterId:waiterId,
+						addressId:addressId
+			         };
+			         $.post(url_upd,date,function(response){
+							alert(response);
+							var id=$("#froms input[name=id]").val("");
+							var orderTime=$("#froms input[name=orderTime]").val("");
+							var customerId=$("#froms input[name=customerId]").val("");
+							var waiterId=$("#froms input[name=waiterId]").val("");
+							var total=$("#froms input[name=total]").val("");
+							var addressId=$("#froms input[name=addressId]").val("");
+							reloadData();
+						})
 		
+				}else{
+					var date={
+						orderTime:orderTime,
+						total:total,
+						customerId:customerId,
+						waiterId:waiterId,
+						addressId:addressId
+			         };
+			         $.post(url_add,date,function(response){
+						alert(response);
+						
+						reloadData();
+					})
+		}
 		
+		event.preventDefault();
 	})
 //给删除按钮绑定事件
 	$("tbody").on("click","a",function(event){
-				if(event.target.className=="btn_del"){
-						var id=event.target.parentNode.parentNode.firstElementChild.firstElementChild.value;
+				if(this.className=="btn_del"){
+					var id=$(this).parents("tr").children().eq(0).find("input").val();
 						url=baseURL+"/order/deleteOrderById";
 						 data="id="+id;
 						$.post(url,data,function(response){
@@ -82,41 +137,27 @@
 								alert(response);
 							}
 						})
-						}
-                if(event.target.className=="btn_upd"){
-                	    var orderTime=event.target.parentNode.parentNode.children[1].innerText;
-						var	total=event.target.parentNode.parentNode.children[2].innerText;
-						var	customerId=event.target.parentNode.parentNode.children[4].innerText;
-						var	waiterId=event.target.parentNode.parentNode.children[3].innerText;
-						var	addressId=event.target.parentNode.parentNode.children[5].innerText;
-						var id=$("input[name=id]").val(id);
-						var orderTime=$("input[name=orderTime]").val(orderTime);
-						var total=$("input[name=total]").val(total);
-						var customerId=$("input[name=customerId]").val(customerId);
-						var waiterId=$("input[name=waiterId]").val(waiterId);
-						var addressId=$("input[name=addressId]").val(addressId);
+						};
+				if(this.className=="btn_upd"){
+					var id =$(this).parents("tr").children().eq(0).find("input").val();
+					var orderTime=$(this).parents("tr").children().eq(1).text();
+					var total=$(this).parents("tr").children().eq(2).text();
+					var customerId=$(this).parents("tr").children().eq(3).text();
+					var waiterId=$(this).parents("tr").children().eq(4).text();
+					var addressId=$(this).parents("tr").children().eq(5).text();
+				
+						var id=$("#froms input[name=id]").val(id);
+						var orderTime=$("#froms input[name=orderTime]").val(orderTime);
+						var customerId=$("#froms input[name=customerId]").val(customerId);
+						var waiterId=$("#froms input[name=waiterId]").val(waiterId);
+						var total=$("#froms input[name=total]").val(total);
+						var addressId=$("#froms input[name=addressId]").val(addressId);
 						
-						date={
-						id:id,
-						orderTime:orderTime,
-						total:total,
-						customerId:customerId,
-						waiterId:waiterId,
-						addressId:addressId	
-						}
-						var url=baseURL+"/order/updateOrderPrimaryKey"
-						$.post(url,date,function(response){
-							if(response.status===200){
-								reloadData();
-							}else{
-								alert(response);
-							}
+	
+				}
+               event.preventDefault();
+		});
 
-						})
-                }
-			
-
-		})
 var baseURL = "http://134.175.154.93:6677";
 // 重载数据
 function reloadData(){
@@ -126,7 +167,7 @@ function reloadData(){
 		$("#order_tbl tbody").empty();
 		//2. 追加新的值
 		response.data.forEach(function(item){
-			var newTr = $(`<tr>
+			var newTr = $(`<tr >
 				<td><input type="checkbox" value="`+item.id+`" class="td_1"></td>
 				<td  class="td_2">`+item.orderTime+`</td>
 				<td class="td_3">`+item.total+`</td>
@@ -145,12 +186,14 @@ function reloadData(){
 reloadData();
 
 
+
+
 </script>
 
 <div class="order">
 <div class="btns">
 		<div id="btn_add" class="btn">添加</div>
-		<div id="btn_import" class="btn">批量导入</div>
+		<div id="btn_batch_del" class="btn">批量删除</div>
 	</div>
 	<div style="margin-bottom: .5em">
 		<!-- 表单 -->
