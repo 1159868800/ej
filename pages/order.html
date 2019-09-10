@@ -28,8 +28,6 @@
 		margin-bottom: .5em;
 	}
 </style>
-
-<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script>
 //给添加绑定事件
     $("#btn_add").click(function(){
@@ -61,10 +59,9 @@ $("#btn_batch_del").click(function(event){
 	$.ajax({
 		url:url,
 		method:"post",
-		date:date,
+		data:date,
 		success:function(response){
 			if(response.status===200){
-				alert("批量删除成功");
 				reloadData();
 				
 			}else{
