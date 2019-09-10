@@ -46,20 +46,20 @@ $("#btn_batch_del").click(function(event){
 		return $(item).val();
 	}).toArray();
 	var url=baseURL+"/order/batchDeleteOrder";
-	var date="";
+	var data="";
 	for(var key in ids){
 		var id=ids[key];
 		if(key==0){
-			date+="ids="+id;
+			data+="ids="+id;
 		}else{
-			date+="&ids="+id;
+			data+="&ids="+id;
 		}
 	}
 	
 	$.ajax({
 		url:url,
 		method:"post",
-		data:date,
+		data:data,
 		success:function(response){
 			if(response.status===200){
 				reloadData();

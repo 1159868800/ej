@@ -28,37 +28,35 @@
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script>
-//给添加绑定事件
-    $("#btn_add").click(function(){
-		var id=$("#froms input[name=id]").val("");
-		var orderTime=$("#froms input[name=orderTime]").val("");
-		var customerId=$("#froms input[name=customerId]").val("");
-		var waiterId=$("#froms input[name=waiterId]").val("");
-		var total=$("#froms input[name=total]").val("");
-		var addressId=$("#froms input[name=addressId]").val("");				
-		
-		
-});
+$("#btn_add").click(function(){
+	var id=$("#froms input[name=id]").val("");
+	var realname=$("#froms input[name=realname]").val("");
+	var telephone=$("#froms input[name=telephone]").val("");
+	var status=$("#froms input[name=status]").val("");
+	var idcard=$("#froms input[name=idcard]").val("");
+	var password=$("#froms input[name=password]").val("");
+})
 //给批量删除绑定事件
-$("#btn_batch_del").click(function(event){
-	var ids=$("#order_tbl input:checkbox" ).filter(":checked").map(function(index,item){
+$(function(){
+	$("#btn_import").click(function(){
+	var ids=$("#waiter_tbl input:checkbox" ).filter(":checked").map(function(index,item){
 		return $(item).val();
 	}).toArray();
-	var url=baseURL+"/order/batchDeleteOrder";
-	var date="";
+	var url=baseURL+"/waiter/batchDeleteWaiter";
+	var data="";
 	for(var key in ids){
 		var ids=ids[key];
 		if(key==0){
-			date+="ids="+ids;
+			data+="ids="+ids;
 		}else{
-			date+="&ids="+ids;
+			data+="&ids="+ids;
 		}
 	}
 	
 	$.ajax({
 		url:url,
 		method:"post",
-		data:date,
+		data:data,
 		success:function(response){
 			if(response.status===200){
 				alert("批量删除成功");
@@ -69,6 +67,7 @@ $("#btn_batch_del").click(function(event){
 			}
 
 		}
+		})
 	})
 })
 
@@ -76,54 +75,55 @@ $("#btn_batch_del").click(function(event){
 $("#froms").submit("onsubmit",function(event){
 	//1.获取用户输入
 		var id=$("#froms input[name=id]").val();
-		var orderTime=$("#froms input[name=orderTime]").val();
-		var customerId=$("#froms input[name=customerId]").val();
-		var waiterId=$("#froms input[name=waiterId]").val();
-		var total=$("#froms input[name=total]").val();
-		var addressId=$("#froms input[name=addressId]").val();				
-		var url_add=baseURL+"/order/insertOrder";
-		var url_upd=baseURL+"/order/updateOrderPrimaryKey";
+		var realname=$("#froms input[name=realname]").val();
+		var telephone=$("#froms input[name=telephone]").val();
+		var status=$("#froms input[name=status]").val();
+		var idcard=$("#froms input[name=idcard]").val();
+		var password=$("#froms input[name=password]").val();
+		var url_ubd=baseURL+"/waiter/insertWaiter";
+		var url_add=baseURL+"/waiter/updateWaiter";
 		var date;
-				if(id){
-					 date={
-						id:id,
-						orderTime:orderTime,
-						total:total,
-						customerId:customerId,
-						waiterId:waiterId,
-						addressId:addressId
-			         };
-			         $.post(url_upd,date,function(response){
-							alert(response);
-							
-							reloadData();
-						})
+		if(id){
+			date={
+				id:id,
+				realname:realname,
+				telephone:telephone,
+				idcard:idcard,
+				status:status,
+				password:password
+			};
+			$.post(url_add,date,function(response){
+			alert(response.message);
+			reloadData();
+		    		})
+
+		}else{
+			date={
+				realname:realname,
+				telephone:telephone,
+				idcard:idcard,
+				status:status,
+				password:password
+			},
+			$.post(url_ubd,date,function(response){
+			alert(response.message);
+			reloadData();
+		})
+
+		}//对象
+		 
 		
-				}else{
-					 date={
-						orderTime:orderTime,
-						total:total,
-						customerId:customerId,
-						waiterId:waiterId,
-						addressId:addressId
-			         };
-			         $.post(url_add,date,function(response){
-						alert(response);
-						
-						reloadData();
-					})
-		}
 		
-		event.preventDefault();
 	})
 //给删除按钮绑定事件
 	$("tbody").on("click","a",function(event){
 				switch(this.className){
 					case "btn_del":
-					var id=$(this).parents("tr").children().eq(0).find("input").val();
-						url=baseURL+"/order/deleteOrderById";
+						var id=$(this).parents("tr").children().eq(0).find("input").val();
+						
+						url=baseURL+"/waiter/deleteWaiterById";
 						 data="id="+id;
-						$.post(url,data,function(response){
+						$.get(url,data,function(response){
 							if(response.status===200){
 								reloadData();
 							}else{
@@ -132,48 +132,47 @@ $("#froms").submit("onsubmit",function(event){
 						})
 						break;
 					case "btn_upd":
-						var id =$(this).parents("tr").children().eq(0).find("input").val();
-						var orderTime=$(this).parents("tr").children().eq(1).text();
-						var total=$(this).parents("tr").children().eq(2).text();
-						var customerId=$(this).parents("tr").children().eq(3).text();
-						var waiterId=$(this).parents("tr").children().eq(4).text();
-						var addressId=$(this).parents("tr").children().eq(5).text();
-					
-						var id=$("#froms input[name=id]").val(id);
-						var orderTime=$("#froms input[name=orderTime]").val(orderTime);
-						var customerId=$("#froms input[name=customerId]").val(customerId);
-						var waiterId=$("#froms input[name=waiterId]").val(waiterId);
-						var total=$("#froms input[name=total]").val(total);
-						var addressId=$("#froms input[name=addressId]").val(addressId);
-						break;
-						
-						}
+					var id=$(this).parents("tr").children().eq(0).find("input").val();
+				    var realname=$(this).parents("tr").children().eq(1).text();
+					var telephone=$(this).parents("tr").children().eq(2).text();
+					var status=$(this).parents("tr").children().eq(4).text();
+					var idcard=$(this).parents("tr").children().eq(3).text();
+					var password=$(this).parents("tr").children().eq(5).text();
 				
-               event.preventDefault();
-		});
-
+					var id=$("#froms input[name=id]").val(id);
+					var realname=$("#froms input[name=realname]").val(realname);
+					var telephone=$("#froms input[name=telephone]").val(telephone);
+					var status=$("#froms input[name=status]").val(status);
+					var idcard=$("#froms input[name=idcard]").val(idcard);
+					var password=$("#froms input[name=password]").val(password);
+					break;
+						
+               
+						
+                	}
+			})
 var baseURL = "http://134.175.154.93:6677";
 // 重载数据
 function reloadData(){
-	var url = baseURL+"/order/findAllOrder";
+	var url = baseURL+"/waiter/findAllWaiter";
 	$.get(url,function(response,status){
 		//1. 将tbody清空
-		$("#order_tbl tbody").empty();
+		$("#waiter_tbl tbody").empty();
 		//2. 追加新的值
 		response.data.forEach(function(item){
-			var newTr = $(`<tr >
-				<td><input type="checkbox" value="`+item.id+`" ></td>
-				<td  >`+item.orderTime+`</td>
-				<td >`+item.total+`</td>
-				<td>`+item.customerId+`</td>
-				<td >`+item.waiterId+`</td>
-				<td >`+item.addressId+`</td>
+			var newTr = $(`<tr>
+				<td><input type="checkbox" value="`+item.id+`" class="td_1"></td>
+				<td  class="td_2">`+item.realname+`</td>
+				<td class="td_3">`+item.telephone+`</td>
+				<td class="td_4">`+item.idcard+`</td>
+				<td class="td_5">`+item.status+`</td>
+				<td class="td_6">`+item.password+`</td>
 				<td>
-					<a class="btn_del" href="#">删除</a>
-					<a class="btn_upd" href="#">修改</a>
+					<a class="btn_del" href="javascript:void(0)">删除</a>
+					<a class="btn_upd" href="javascript:void(0)">修改</a>
 				</td>
 			</tr>`);
-			$("#order_tbl").append(newTr)
+			$("#waiter_tbl").append(newTr)
 		})
 	})
 }
