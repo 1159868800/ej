@@ -6,7 +6,7 @@ html,body,.container {
 }
 .container > .left {
 	width: 220px;
-	background-color: teal;
+	background-color: #5bb98b;
 	height: 100%;
 	float: left;
 	color: #ffffff;
