@@ -4,160 +4,17 @@
 	<meta charset="UTF-8">
 	<title>产品管理</title>	
 	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
-	<style>
-		html,body {
-			margin: 0px;
-			padding: 0px;
-			margin-top: 0px;
-		}
-		.table > thead {
-			background-color: #313131;
-			color: #ccc;
-			font-size: 13px;
-			border-top: none;
-		}
-		.table {
-			color: #444444;
-			border-collapse: collapse;
-			width: 100%;
-			text-align: center;
-			background-color: white;
-		}
-		.table td {
-			border: 1px solid #ccc;
-			line-height: 2em;
-			font-size: 13px;
-		}
-		.table tr.current {
-			background-color: #ededed;
-		}
-		.none {
-			display: none;
-		}
-		.btn {
-			font-size: 13px;
-			padding: .5em 1em;
-			border-radius: 3px;
-			background-color: #313131;
-			color: white;
-			cursor: pointer;
-			display: inline-block;
-		}
-		.btns {
-			
-		}
-		img {
-			width: 15px;
-			height: 15px;			
-		}
-		label {
-			display: inline-block;
-			margin-top: 20px;
-			padding-bottom: 10px;
-		}
-		label > span{
-			color: white;
-			font-size: 13px;
-			padding-left: 20px;
-		}		
-		#product_form input[type="text"] {
-			border: 1px;			
-			width:300px;
-			height:22px;
-			padding:5px 0 0 2px;
-		}
-		.search {
-			background-color: #313131;
-		}
-		#product_form input[type="submit"] {
-			background-color: #313131;
-			border: none;
-			color: white;
-		}
-		
-		h3 {
-			color: white;
-		}
-		.titleone {
-			background-color: #444444;
-			height: 50px;
-			color: white;
-			font-size: 20px;
-			padding-left: 10px;
-			line-height: 2.5em;
-		}
-		.titletwo {
-			padding-top: 2px;
-			padding-left: 18px;
-			color: white;
-			font-size: 15px;
-		
-		}
-	</style>
+	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+	<link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<div class="titleone">
-	产 品 管 理
+	<div class="font-weight-bold text-monospace" style="font-size: 30px;">
+	产品管理
 	</div>
-	
-	<!-- 注释节点 -->
-	<div class="btns">
-		
-		</div>
-	</div>
-	
-	<div style="margin-bottom: .5em" class="search">
-		<div class="titletwo">添加商品</div>
-		<!-- 表单 -->
-		<form id="product_form" action="javascript:void(0)">
-			<input type="hidden" name="id" />
-			<label>
-				<span>
-					产品名称：
-				</span>
-				<input type="text" name="name"/>
-			</label>
-			<label>
-				<span>
-					产品描述：
-				</span>
-				<input type="text" name="description"/>
-			</label>
-			<label>
-				<span>
-					产品价格：
-				</span>
-				<input type="text" name="price"/>
-			</label>
-			<label>
-				<span>
-					产品状态：
-				</span>
-				<input type="text" name="status"/>
-			</label>
-			<label>
-				<span>
-					产品图片：
-				</span>
-			<input type="text" name="photo"/>
-			</label>
-			<label>
-				<span>
-					产品分类：
-				</span>
-				<input type="text" name="categoryId"/>
-			</label>
-			<label>
-				<input type="submit" value="提交">
-			</label>
-			<div id="btn_add" class="btn">清空</div>
-			<div id="btn_batch_del" class="btn">批量删除
-		</form>
-	</div>
-
-
-	<table class="table" id="product_tbl">
-		<thead>
+	<table class="table table-striped table-sm" id="product_tbl">
+		<thead class="bg-info" style="color:white">
 			<tr>
 				<td width="80px">编号</td>
 				<td>产品名称</td>
@@ -173,6 +30,76 @@
 			
 		</tbody>
 	</table>
+	<!-- 按钮 -->
+		<button id="btn_add_customer" class="btn btn-primary mb-2">添加产品</button>
+		<button id="btn_batch_del" class="btn btn-primary mb-2">批量删除</button>
+		<!-- / 按钮 -->
+
+		<!-- 模态框 -->
+<div class="modal fade" id="customerModal" tabindex="-1">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">添加顾客信息</h5>
+        <button type="button" class="close" onclick="closeCustomerModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+  	<!-- 表单 -->
+		<form id="product_form" action="javascript:void(0)">
+			<input type="hidden" name="id" />
+		  <div class="form-row">
+		    <div class="form-group col-md-6">
+		      <label for="inputEmail4">产品名称</label>
+		      <input type="name" class="form-control" id="inputEmail4" placeholder="ProductName" name="name">
+		    </div>
+		    <div class="form-group col-md-6">
+		      <label for="inputPassword4">产品价格</label>
+		      <input type="text" class="form-control" id="inputPassword4" placeholder="ProductPrice" name="price">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="inputAddress">产品描述</label>
+		    <input type="text" class="form-control" id="inputAddress" placeholder="ProductDescription" name="description">
+		  </div>
+		  <div class="form-group">
+		    <label for="inputAddress2">产品状态</label>
+		    <input type="text" class="form-control" id="inputAddress2" placeholder="ProductStatus" name="status">
+		  </div>
+		  <div class="form-row">
+		    <div class="form-group col-md-6" >
+			    <label for="exampleFormControlFile1">产品图片</label>
+			    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="photo">
+			  </div>
+		    <div class="form-group col-md-6">
+		      <label for="inputState">产品分类</label>
+		      <select id="inputState" class="form-control" name="categoryId">
+		        <option selected>Choose...</option>
+		        <option>...</option>
+		      </select>
+		    </div>
+		    
+		  </div>
+		
+		<div id="btn_add" class="btn btn-primary">清空</div>
+		  <input type="submit" value="提交" class="btn btn-primary">
+</form>
+	<!-- / 表单 -->     
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCustomerModal()">关闭</button>
+
+			
+		
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / 模态框 -->
+
+	
 
 
 	<script>		
@@ -195,14 +122,20 @@
 				<td>`+item.photo+`</td>
 				<td>`+item.categoryId+`</td>
 				<td>
-					<a class="btn_del" href="javascript:void(0)"><img src="../css/delet.png" alt="" /></a>
-					<a class="btn_upd" href="javascript:void(0)"><img src="../css/update.png" alt="" /></a>
+					<a class="btn_del" href="javascript:void(0)"><i class="fa fa-trash mr-3"></i></a>
+					<a class="btn_upd" href="javascript:void(0)"><i class="fa fa-edit text-primary></i></a>
 				</td>
 			</tr>`);
 				$("#product_tbl").append(newTr)
 				});
 			});
 		}
+
+		// 关闭模态框
+		function closeCustomerModal(){
+			$("#customerModal").modal("hide");
+		}
+
 	$(function(){
 		reloadData();
 		// 给删除按钮绑定事件
@@ -324,23 +257,18 @@
 			})
 		})
 	})
+		$(function(){
+			
+			// 加载数据
+			reloadData();
+			// 为按钮绑定事件
+			$("#btn_add_customer").click(function(){
+				//显示模态框
+				$("#customerModal").modal("show");
+			});
+		});
 		
 		
-		// // 当光标移动的某一行上，为这一行添加背景
-		// tbody.onmouseover = function(event){
-		// 	var target = event.target;
-		// 	if(target.nodeName === "TD"){
-		// 		target.parentNode.className = "current"
-		// 	}
-		// }
-		// tbody.onmouseout = function(event){
-		// 	var target = event.target;
-		// 	if(target.nodeName === "TD"){
-		// 		target.parentNode.className = ""
-		// 	}
-		// }
-		
-	// reloadData();		
 	</script>
 </body>
 </html>
